@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { TrucksModule } from './trucks/trucks.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -18,7 +20,9 @@ import { UsersModule } from './users/users.module';
           'mongodb://127.0.0.1:27017/challenge-bego',
       }),
     }),
+    AuthModule,
     UsersModule,
+    TrucksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
