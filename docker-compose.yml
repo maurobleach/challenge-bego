@@ -1,0 +1,36 @@
+services:
+  mongo:
+    image: mongo:4.4
+    container_name: challenge-bego-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+    profiles: ["mongo", "full"]
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: challenge-bego-app
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://mongo:27017/challenge-bego
+      JWT_SECRET: dev-jwt-secret
+      JWT_EXPIRES_IN: 1h
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    profiles: ["full"]
+
+volumes:
+  mongo_data:
